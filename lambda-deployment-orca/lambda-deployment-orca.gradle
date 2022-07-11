@@ -64,54 +64,29 @@ dependencies {
   testCompile group: 'org.mockito', name: 'mockito-core', version: '2.19.0'
   testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.19.0'
   testCompile (group: 'com.netflix.spinnaker.orca', name: 'orca-clouddriver', version: "${orcaVersion}")
-  testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1"
 
   testImplementation("com.fasterxml.jackson.core:jackson-core") {
     version {
-      strictly '2.12.3'
+      strictly '2.11.2'
     }
   }
   testImplementation("com.fasterxml.jackson.core:jackson-annotations") {
     version {
-      strictly '2.12.3'
+      strictly '2.11.2'
     }
   }
   testImplementation("com.fasterxml.jackson.core:jackson-databind") {
     version {
-      strictly '2.12.3'
+      strictly '2.11.2'
     }
   }
   testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin") {
     version {
-      strictly '2.12.3'
+      strictly '2.11.2'
     }
   }
-  testImplementation("org.junit.jupiter:junit-jupiter-api") {
-    version {
-      strictly '5.7.0'
-    }
-  }
-  testImplementation("org.junit.platform:junit-platform-commons") {
-    version {
-      strictly '1.4.0'
-    }
-  }
-  testImplementation("org.junit.platform:junit-platform-engine") {
-    version {
-      strictly '1.4.0'
-    }
-  }
-  testImplementation("org.junit.platform:junit-platform-launcher") {
-    version {
-      strictly '1.4.0'
-    }
-  }
-
-  constraints {
-    implementation('com.fasterxml.jackson.core:jackson-databind:2.12.3') {
-      because 'previous versions have a bug impacting this application'
-    }
-  }
+  testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+  testImplementation("org.junit.platform:junit-platform-commons:1.4.0")
 }
 
 tasks.withType(Test) {

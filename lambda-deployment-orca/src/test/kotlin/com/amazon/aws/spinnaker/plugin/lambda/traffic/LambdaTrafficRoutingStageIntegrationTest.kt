@@ -24,7 +24,10 @@ class LambdaTrafficRoutingStageIntegrationTest: JUnit5Minutests {
 
             test("LambdaTrafficRoutingStage extension is resolved to the correct type") {
                 val stageDefinitionBuilder = stageResolver.getStageDefinitionBuilder(
-                    LambdaTrafficRoutingStage::class.java.name, "Aws.LambdaTrafficRoutingStage")
+                    LambdaTrafficRoutingStage::class.java.simpleName, "Aws.LambdaTrafficRoutingStage")
+
+                System.out.println("stageDefinitionBuilder: " + stageDefinitionBuilder);
+                System.out.println("stageDefinitionBuilder.type: " + stageDefinitionBuilder.type);
 
                 expect {
                     that(stageDefinitionBuilder.type).isEqualTo("Aws.LambdaTrafficRoutingStage")
