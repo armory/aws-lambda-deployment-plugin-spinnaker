@@ -1,5 +1,6 @@
 package com.amazon.aws.spinnaker.plugin.lambda.traffic
 
+import com.amazon.aws.spinnaker.plugin.lambda.LambdaSpringLoaderPlugin
 import com.amazon.aws.spinnaker.plugin.lambda.utils.LambdaCloudDriverUtils
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -34,7 +35,7 @@ import java.io.File
         }
 
         PluginJar.Builder(plugins.toPath().resolve("$pluginId.jar"), pluginId)
-            .pluginClass(LambdaTrafficRoutingStage::class.java.name)
+            .pluginClass(LambdaSpringLoaderPlugin::class.java.name)
             .pluginVersion("1.0.0")
             .build()
     }
