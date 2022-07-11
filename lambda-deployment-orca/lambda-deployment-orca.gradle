@@ -49,9 +49,7 @@ dependencies {
   implementation("com.squareup.okhttp3:okhttp-apache:3.13.1")
   annotationProcessor("org.pf4j:pf4j:3.2.0")
   annotationProcessor ("org.projectlombok:lombok:1.18.12")
-  testImplementation (group: 'com.netflix.spinnaker.orca', name: 'orca-api', version: "${orcaVersion}") {
-    exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-kotlin'
-  }
+  testImplementation (group: 'com.netflix.spinnaker.orca', name: 'orca-api', version: "${orcaVersion}")
   testImplementation (group: 'com.netflix.spinnaker.orca', name: 'orca-api-tck', version: "${orcaVersion}")
   testImplementation (group: 'com.netflix.spinnaker.orca', name: 'orca-queue', version: "${orcaVersion}")
   testImplementation (group: 'com.netflix.spinnaker.kork', name: 'kork-plugins-tck', version: "${korkVersion}")
@@ -80,11 +78,7 @@ dependencies {
       strictly '2.11.2'
     }
   }
-  testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin") {
-    version {
-      strictly '2.11.2'
-    }
-  }
+  testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
   testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
   testImplementation("org.junit.platform:junit-platform-commons:1.4.0")
 }
