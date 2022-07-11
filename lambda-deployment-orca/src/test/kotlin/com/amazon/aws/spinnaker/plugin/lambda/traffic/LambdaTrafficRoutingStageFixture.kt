@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc
 import java.io.File
 
 @TestPropertySource(properties = [
-    "spinnaker.extensibility.plugins.Aws.LambdaDeployment.Plugin.enabled=true",
+    "spinnaker.extensibility.plugins.Aws.LambdaDeploymentPlugin.enabled=true",
     "spinnaker.extensibility.plugins-root-path=build/plugins"
 ])
 @AutoConfigureMockMvc

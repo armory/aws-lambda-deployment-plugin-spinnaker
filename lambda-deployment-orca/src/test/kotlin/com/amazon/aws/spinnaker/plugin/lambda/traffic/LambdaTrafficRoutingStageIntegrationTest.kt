@@ -18,7 +18,7 @@ class LambdaTrafficRoutingStageIntegrationTest: JUnit5Minutests {
 
     fun tests() = rootContext<OrcaPluginsFixture> {
         context("a running Orca instance") {
-            orcaFixture {
+            this.orcaFixture {
                 OrcaPluginsFixture()
             }
 
