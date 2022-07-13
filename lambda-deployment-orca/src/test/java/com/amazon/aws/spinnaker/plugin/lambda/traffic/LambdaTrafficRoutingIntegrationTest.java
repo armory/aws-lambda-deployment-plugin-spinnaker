@@ -16,38 +16,31 @@
 
 package com.amazon.aws.spinnaker.plugin.lambda.traffic;
 
-import com.netflix.spinnaker.orca.StageResolver;
+import com.amazon.aws.spinnaker.plugin.lambda.traffic.model.LambdaTrafficUpdateInput;
 import com.netflix.spinnaker.orca.api.pipeline.graph.StageDefinitionBuilder;
-import org.junit.jupiter.api.BeforeEach;
+import dev.minutest.junit.JUnit5Minutests;;
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-import javax.annotation.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public class LambdaTrafficRoutingIntegrationTest {
-    private StageResolver stageResolver;
-
-    @Resource
-    @InjectMocks
-    private LambdaTrafficRoutingStage lambdaTrafficRoutingStage;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-        stageResolver = mock(StageResolver.class);
-
-        when(stageResolver.getStageDefinitionBuilder(LambdaTrafficRoutingStage.class.getSimpleName(),
-                "Aws.LambdaTrafficRoutingStage")).thenReturn(lambdaTrafficRoutingStage);
-    }
+public class LambdaTrafficRoutingIntegrationTest extends OrcaPluginsFixture {
 
     @Test
     public void resolveToCorrectTypeTest() {
-        StageDefinitionBuilder stageDefinitionBuilder = stageResolver.getStageDefinitionBuilder(
+        StageDefinitionBuilder stageDefinitionBuilder = this.stageResolver.getStageDefinitionBuilder(
             LambdaTrafficRoutingStage.class.getSimpleName(), "Aws.LambdaTrafficRoutingStage");
 
         assertTrue(stageDefinitionBuilder.aliases().contains("Aws.LambdaTrafficRoutingStage"), "Expected stageDefinitionBuilder to contain Aws.LambdaTrafficRoutingStage");
@@ -55,6 +48,53 @@ public class LambdaTrafficRoutingIntegrationTest {
     }
 
     @Test
-    public void LambdaTrafficRoutingStageIntegrationTest() {
+    public void LambdaTrafficRoutingStageIntegrationTest() throws Exception {
+        String content = mapper.writeValueAsString(Map.of(
+                "application","lambda"
+                ,"stages", List.of(Map.of(
+                        "refId","1",
+                        "type","Aws.LambdaTrafficRoutingStage",
+                        "functionName","lambda-myLambda",
+                        "region", "us-west-2",
+                        "deploymentStrategy", "$BLUEGREEN",
+                        "timeout", 30,
+                        "aliasName", "alias1",
+                        "account", "aws-account"
+                ))));
+        final MvcResult postResults = this.mockMvc.perform(MockMvcRequestBuilders
+                .post("/orchestrate")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        MockHttpServletResponse response = postResults.getResponse();
+        assertEquals(response.getStatus(), 200);
+
+        Map map = mapper.readValue(response.getContentAsString(), Map.class);
+        final MvcResult getResults = mockMvc.perform(MockMvcRequestBuilders
+                .get((String) map.get("ref")))
+                .andReturn();
+
+        Execution execution = mapper.readValue(getResults.getResponse().getContentAsString(), Execution.class);
+        System.out.println("status: " + execution.getStatus());
+        LambdaTrafficUpdateInput context = execution.getStages().get(0).getContext();
+        assertEquals("lambda-myLambda", context.getFunctionName());
+        assertEquals("us-west-2", context.getRegion());
+        assertEquals("$BLUEGREEN", context.getDeploymentStrategy());
+        assertEquals(30, context.getTimeout());
+        assertEquals("alias1", context.getAliasName());
+        assertEquals("aws-account", context.getAccount());
+
     }
+
 }
+    @Data
+    class Execution {
+        String status;
+        List<Stage> stages;
+    }
+    @Data
+    class Stage {
+        String status;
+        LambdaTrafficUpdateInput context;
+        String type;
+    }
