@@ -83,7 +83,7 @@ public class LambdaTrafficRoutingIntegrationTest extends OrcaPluginsFixture {
         assertEquals(30, context.getTimeout());
         assertEquals("alias1", context.getAliasName());
         assertEquals("aws-account", context.getAccount());
-        System.out.println("hola");
+        System.out.println("hola2");
     }
 
 }
